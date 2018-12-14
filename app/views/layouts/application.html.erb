@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <!-- Google Tag Manager -->
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','GTM-PK738GX');</script>
+    <!-- End Google Tag Manager -->
+
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <script>
+      (adsbygoogle = window.adsbygoogle || []).push({
+        google_ad_client: "ca-pub-4358027425871014",
+        enable_page_level_ads: true
+      });
+    </script>
+
+    <%= include_gon :watch => true %>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <%= display_meta_tags(default_meta_tags) %>
+  	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+  	<% if request.from_pc? %>
+  	  <link rel="stylesheet" href="/assets/pc.css">
+  	<% else %>
+      <link rel="stylesheet" href="/assets/sp.css">
+    <% end %>
+    <link rel="stylesheet" href="/assets/slick.css">
+    <!-- drawer.css -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/drawer/3.2.2/css/drawer.min.css">
+    <!-- <link rel="icon" href="/img/favicon.ico" > -->
+    <link rel="apple-touch-icon" href="" sizes="152x152">
+  </head>
+
+  <body class="drawer drawer--right">
+    <!-- Google Tag Manager (noscript) -->
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-PK738GX"
+    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    <!-- End Google Tag Manager (noscript) -->
+    <header role="banner">
+      <div class="headContent">
+        <h1><a href="/top"><img src="/img/logo.png"></a></h1>
+        <%= form_tag('/search/search', class: "headSearch", method: "get") do %>
+            <input type="search" name="word" placeholder="検索ワード" autocomplete="off" required >
+            <input type="image" src="/img/searchBtn.png" value="検索" class="searchBtn">
+            <input type="hidden" name="sort" value="1">
+        <% end %>
+        <% if session[:g_id] == Rails.application.secrets.ManageID1 || session[:g_id] == Rails.application.secrets.ManageID2 || session[:g_id] == Rails.application.secrets.ManageID3 %>
+          <a href="/manager/manager"><p class="createListBtn">管理</p></a>
+        <% end %>
+
+        <% if session[:gtoken] != nil %>
+          <a href="/program/registerform"><p class="createListBtn">番組登録</p></a>
+          <div class="userBox">
+            <a href="/login/userview?utf8=✓&sort=3">
+              <li>
+                <img src = "<%=session[:user_icon] %>" width="50" height="50">
+                <%= session[:user_name] %>
+              </li>
+            </a>
+          </div>
+        <% else %>
+            <a href="/login"><p class="createListBtn">ログイン</p></a>
+        <% end %>
+      </div>
+
+
+      <% if flash[:notice] %>
+        <div class="alert alert-success">
+          <%= flash[:notice] %>
+        </div>
+      <% end %>
+
+      <% if flash[:alert] %>
+        <div class="alert alert-fail">
+          <%= flash[:alert] %>
+        </div>
+      <% end %>
+
+      <% if flash[:closed] %>
+        <div class="alert alert-closed">
+          <%= flash[:closed] %>
+        </div>
+      <% end %>
+
+
+      <!-- sp Menu -->
+      <!-- ハンバーガー -->
+      <button type="button" class="drawer-toggle drawer-hamburger">
+        <span class="sr-only">toggle navigation</span>
+        <span class="drawer-hamburger-icon"></span>
+      </button>
+      <!-- /ハンバーガー -->
+      <nav class="drawer-nav" role="navigation">
+        <% if session[:gtoken] != nil %>
+          <div class="userBox">
+            <img src = "<%=session[:user_icon] %>" width="50" height="50">
+            <p><a href="/login/userview?utf8=✓&sort=3"><%= session[:user_name] %></a></p>
+          </div>
+        <% else %>
+          <p class="createListBtn"><%= link_to("ログイン", "/login") %></p>
+        <% end %>
+        <%= form_tag('/search/search', class: "headSearchSp" , method: "get") do %>
+          <input type="search" name="word" placeholder="検索ワード" autocomplete="off" required >
+          <input type="image" src="/img/searchBtn.png" value="検索" class="searchBtn">
+          <input type="hidden" name="sort" value="1">
+        <% end %>
+        <% if session[:gtoken] != nil %>
+          <p class="createListBtn"><%= link_to("番組登録", "/program/registerform") %></p>
+          <p class="logout"><a href="/logout">ログアウト</a></p>
+        <% end %>
+      </nav>
+      <!-- end sp Menu -->
+
+    </header>
+    <!-- jquery & iScroll -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/iScroll/5.2.0/iscroll.min.js"></script>
+    <div class="wrap">
+      <%= yield %>
+    </div>
+
+    <p class="gotoTop"><img src="/img/gotoTop@2x.png" alt=""></p>
+    <footer>
+      <div class="footerContent">
+        <p class="copy">All Rights Reserved © VROS</p>
+        <p class="contact">
+          <ul class="contact">
+            <li><a href="/about">VROSについて</a></li>
+          	<li><a href="https://canbethelight.com/aboutus.html" target="_blank">運営会社</a></li>
+          	<li><a href="/policy/policy">プライバシーポリシー</a></li>
+          	<li><a href="/policy/termsofuse">利用規約</a></li>
+          	<li><a href="/contact/form">フィードバック・お問い合わせ</a></li>
+          </ul>
+      </div>
+    </footer>
+
+    <!-- drawer.js -->
+    <script src="/assets/drawer.js"></script>
+    <script>
+      $(document).ready(function() {
+        $('.drawer').drawer();
+      });
+    </script>
+
+    <!-- gototop -->
+    <script>
+    	$(function(){
+        $('.gotoTop').click(function () {
+            $("html,body").animate({scrollTop:0},"300");
+        });
+    });
+    </script>
+
+  </body>
+</html>

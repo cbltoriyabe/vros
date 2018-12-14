@@ -1,0 +1,2 @@
+class Awm < ApplicationRecord
+end

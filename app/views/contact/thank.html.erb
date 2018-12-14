@@ -1,0 +1,20 @@
+<div class="cont">
+<% set_meta_tags title: "お問い合わせ", description: "VROSのお問い合わせ", og: { title: "お問い合わせ", type: 'article' } %>
+
+  <div class="contCreateList midLength">
+  <h2 class="main">送信完了</h2>
+    <p class="txt center">下記内容でお問い合わせを承りました。ありがとうございました</p>
+    <p class="txt center">お問い合わせ番号</p>
+    <p class="txt center"><%= @contact.id %>
+    <p class="txt center">お問い合わせ内容</p>
+    <p class="txt center"><%= @contact.genre %></p>
+    <p class="txt center">お名前</p>
+    <p class="txt center"><%= @contact.name %></p>
+    <p class="txt center">メールアドレス</p>
+    <p class="txt center"><%= @contact.mail %></p>
+    <p class="txt center">コメント</p>
+    <%= simple_format(@contact.com,:class => "txt center") %>
+  </div>
+
+  <a href="/top"><div class="btn mainBtn">TOPへ戻る</div></a>
+</div>

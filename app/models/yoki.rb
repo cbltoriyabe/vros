@@ -1,0 +1,2 @@
+class Yoki < ApplicationRecord
+end

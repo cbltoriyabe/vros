@@ -1,0 +1,2 @@
+class GToken < ApplicationRecord
+end

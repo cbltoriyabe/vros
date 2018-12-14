@@ -1,0 +1,202 @@
+<div class="cont">
+<div class="contDetail">
+<% set_meta_tags title: @program.p_title, description: "VROSの番組詳細ページ |#{@program.p_title}| ユーザー参加型のVtuber番組表サービスVROS", og: { title: @program.p_title, type: 'article', url: request.original_url,description: @program.about[0,50] , image: "http://vros.jp#{@program.image.url}" } %>
+
+<div class="detailBox">
+  <div class="detailIn01">
+    <div class="detailHeadImg">
+      <img src="
+
+      <% if @program.image.url != nil %>
+        <%= @program.image.url %>
+      <% else %>
+        <%= "/img/sampledummy.png"%>
+      <% end %>" alt="">
+    </div>
+
+    <div class="shareBox">
+        <p class="yokiCount">
+        <% @yoki_status = Yoki.where(user_id: session[:user_id]).where(program_id: @program.id) %>
+        <% if @yoki_status.length == 0 %>
+          <%= link_to(image_tag("/img/yoki.png",:class => "yokiIcon"), "/program/#{@program.id}/like", method: :post)  %>
+        <% else %>
+          <% if @yoki_status[0].check == true %>
+            <%= image_tag("/img/yokiOn.png",:class => "yokiIcon") %>
+          <% else %>
+            <%= link_to(image_tag("/img/yoki.png",:class => "yokiIcon"), "/program/#{@program.id}/like", method: :post)  %>
+          <% end %>
+        <% end %>
+
+        <span class="yokiCountFigure"><%= @program.like %></span>
+        <span class="yokiCountTxt">人がこのチャンネルに「</span>
+        良き！<span class="yokiCountTxt">」と言っています</span>
+        </p>
+    <!-- end shareBox -->
+  </div>
+</div>
+  <!-- end detailIn01 -->
+  <div class="detailIn02">
+    <div class="categoryBox">
+      <p class="categoryTag"><%= Genre.select(:g_name).find_by(id: @program.genre).g_name %></p>
+      <% if @program.archives == "true" %>
+        <p class="archiveType typeYes">アーカイブあり</p>
+      <% else %>
+        <p class="archiveType">アーカイブなし</p>
+      <% end %>
+    </div>
+
+    <h2><%= @program.p_title %></h2>
+
+    <div class="detailDate">
+      <p><%= Time.at(@program.start_time_u).strftime("%Y/%m/%d(%a) %H:%M") %>～
+        <% if @program.start_time_u != @program.end_time_u && @program.end_time_u != nil %>
+          <%= Time.at(@program.end_time_u).strftime("%H:%M") %>
+        <% end %>
+      </p>
+    </div>
+
+    <div class="userName">
+      <img src="<%= Channel.select(:c_icon).find_by(id: @program.channel).c_icon %>" alt="" width="50" height="50">
+      <p><%= Channel.select(:c_name).find_by(id: @program.channel).c_name %></p>
+    </div>
+    <!-- end userName -->
+    <div class="shareDetail">
+        <ul>
+          <a href="http://twitter.com/share?text=<%= @program.p_title.gsub(/#/, '%23') %>&url=<%= request.original_url %>&hashtags=VROS_pg" target="_blank"><li><img src="/img/share_twIcon.png" alt=""></li></a>
+          <a href="http://line.me/R/msg/text/?http://vros.jp/program/detail/<%= @program.id %>" target="_blank"><li><img src="/img/share_lineIcon.png" alt=""></li></a>
+          <a href="http://www.facebook.com/share.php?u=http://vros.jp/program/detail/<%= @program.id %>" target="_blank"><li><img src="/img/share_fbIcon.png" alt=""></li></a>
+          <li class="shareTip"><img src="/img/3pointIcon.png" alt=""></li>
+        </ul>
+        <div class="tipBox">
+          <ul>
+            <a href="/contact/form?statu=true&p_title=<%= @program.p_title %>"><li>報告する</li></a>
+          </ul>
+        </div>
+    </div>
+    <!-- end shareDetail -->
+  </div>
+  <!-- end detailIn02 -->
+</div>
+<!-- end detailBox -->
+<div class="contDetailIn">
+  <ul class="detailList">
+    <li>
+    <h4>出演者</h4>
+    <div class="detailListIn">
+      <ul>
+        <%
+          member = @program.member.split(",")
+          member.each do |a|
+        %>
+          <li>
+            <a href="/search/search?utf8=✓&word=<%= a%>&sort=1"><%= a %></a>
+          </li>
+        <% end %>
+      </ul>
+    </div>
+    </li>
+    <li>
+      <h4>チャンネル</h4>
+      <div class="detailListIn">
+        <p>
+          <a href = "https://www.youtube.com/channel/<%= Channel.select(:c_url).find_by(id: @program.channel).c_url%>" target="_blank">
+            https://www.youtube.com/channel/<%= Channel.select(:c_url).find_by(id: @program.channel).c_url%>
+          </a>
+        </p>
+      </div>
+    </li>
+
+    <li>
+      <h4>概要</h4>
+      <div id="detailListIn" class="detailListIn">
+        <%= simple_format(@program.about) %>
+      </div>
+    </li>
+
+    <li>
+      <h4>プラットフォーム</h4>
+      <div class="detailListIn">
+        <%= @program.platform %>
+      </div>
+    </li>
+
+
+    <li>
+      <h4>タグ</h4>
+      <div class="detailListIn">
+        <p>
+        <%
+          tags = @program.tag.split(",")
+          tags.each do |tag|
+        %>
+           <a href="/search/search?utf8=✓&word=<%= tag.gsub(/#/, '%23') %>&sort=1"><%= tag %></a>
+        <% end %>
+        </p>
+      </div>
+    </li>
+
+    <li>
+      <h4>情報源URL</h4>
+      <div class="detailListIn">
+        <p><a href="<%= @program.info %>" target="_blank"><%= @program.info %></a></p>
+      </div>
+    </li>
+
+    <li>
+      <h4>情報提供者</h4>
+      <div class="detailListIn">
+        <div class="userName">
+          <img src="
+            <% u = User.select(:g_id).find_by(id: @program.user_id).g_id %>
+            <%= GoogleT.select(:g_icon).find_by(g_id: u).g_icon %>
+          " alt="" width="50" height="50">
+          <p><%= GoogleT.select(:g_name).find_by(g_id: u).g_name %></p>
+        </div>
+      </div>
+    </li>
+  </ul>
+
+  <a href="<%= @program.p_url %>" target="_blank">
+    <p class="btn mainBtn">番組を観に行く</p>
+  </a>
+
+  <% if session[:user_id] == @program.user_id || session[:g_id] == Rails.application.secrets.ManageID1 %>
+    <a href="/program/<%= @program.id %>/edit">
+      <p class="btn secondBtn">内容を修正する</p>
+    </a>
+
+    <a href="/program/registerform/<%= @program.id %>">
+      <p class="btn secondBtn">再利用</p>
+    </a>
+  <% end %>
+</div>
+</div>
+
+
+<script type="text/javascript" src="https://code.jquery.com/jquery-1.11.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/iScroll/5.2.0/iscroll.min.js"></script>
+<script>
+
+$(function(){
+   $('.tipBox').hide();
+   $('.shareTip').click(function(){
+      $('.tipBox').fadeToggle('fast');
+   });
+});
+
+window.onload = $(function(){
+    return $('#detailListIn').each(function(){
+        var srcText = this.innerHTML;
+        var reg = new RegExp("(https?:\/\/[-_.!~*\'()a-zA-Z0-9;\/?:\@&=+\$,%#]+)", "g");
+        replace_text = srcText.replace(reg ,"<a href='$1' target='_blank'>$1</a>");
+        this.innerHTML = replace_text
+    });
+});
+</script>
+<!-- drawer.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/drawer/3.2.2/js/drawer.min.js"></script>
+<script>
+$(document).ready(function() {
+$('.drawer').drawer();
+});
+</script>

@@ -1,0 +1,312 @@
+<div id="cont" class="cont top">
+<% set_meta_tags title: "VROS | みんなでつくるVtuber番組表", description: "VROSトップページ | ユーザー参加型のVtuber番組表サービスVROS", og: { title: "TOP", description: "VROSトップページ | ユーザー参加型のVtuber番組表サービスVROS", type: 'article' } %>
+
+	<script>
+	//pcとsp共通部分かつrails
+	//ジャンル名構築開始------------------------
+	var genreList = [];
+	//ジャンルを取得
+	<% @genre.each_with_index do |genre, i| %>
+		genreList.push(["<%= genre.id %>", "<%= genre.g_name %>"])
+	<% end %>
+	</script>
+	<!-- pcかspか判定 -->
+  	<% if request.from_pc? %>
+  	  <script src="/assets/pc.js"></script>
+  	<% else %>
+      <script src="/assets/sp.js"></script>
+    <% end %>
+
+	<% if session[:user_id] == nil %>
+		<div class="topSlide">
+			<img src="/img/kv.png" alt="">
+			<img src="/img/kv2.png" alt="">
+		</div>
+	<% end %>
+
+	<div class="dateContent">
+
+		<div class="dateSlide" data-wrap="true" data-clickOpens="false">
+			<a class="input-button" title="toggle" data-toggle>
+				<p><img src="/img/calendar.png" alt=""></p>
+				<span class="ring"></span>
+			</a>
+			<input id="selectdate" class="datePick" type="date" data-altinput=true data-input onChange="Getgon()">
+
+			<ul class="dateSlideList">
+				<li class="children">00</li>
+				<li class="children">00</li>
+				<li class="children">00</li>
+				<li class="children">00</li>
+				<li class="children">00</li>
+				<li class="children">00</li>
+				<li class="children">00</li>
+			</ul>
+		</div>
+
+		<div class="settingBtn">
+			<% if request.from_pc? %>
+				<p class="todayBtn"><img src="/img/nowBtn.png" alt="ON"></p>
+			<% else %>
+				<p class="todayBtn"><img src="/img/todayBtn.png" alt="ON"></p>
+			<% end %>
+			<p class="switch"><img src="/img/thumbOn.png" alt="ON"></p>
+		</div>
+
+	</div>
+
+
+	  	<% if request.from_pc? %>
+
+		<div id="functionInfo" class="modal-content">
+			<div class="stepSlide">
+				<div>
+					<p class="new">新機能</p>
+					<h2 class="step1">タイムスケジュールがさらに見やすくなりました !</h2>
+					<p class="lead">番組を時間単位で表示するようにしました。</p>
+					<img src="/img/step1.png" alt="">
+		
+				</div>
+				<div>
+					<p class="new">新機能</p>
+					<h2 class="step2">番組表が現在時刻から見られるようになりました！</h2>
+					<p class="lead">ご要望の多かった現在時刻表示を採用しました！<br>
+		閲覧中、NOWボタンでも現在時刻表示に移動できます。</p>
+		<img src="/img/step2.png" alt="">
+				</div>
+				<div><p class="new">新機能</p>
+					<h2 class="step3">番組表の『良き！』ボタンを採用しました！</h2>
+					<p class="lead">詳細ページに行く前に推し番組に良き！できるようにしました。</p>
+					<img src="/img/step3.png" alt="">
+				</div>
+				<div>
+					<h2 class="step4">カレンダーアイコンからカレンダー表示</h2>
+					<p class="lead">アイコンからカレンダーを表示し、見たい日付の番組表へ<br>
+					素早くアクセスできます！</p>
+					<img src="/img/step4.png" alt="">
+				</div>
+			</div>
+			<p class="modal-close"></p>
+		</div>
+		<!-- end modal -->
+			<% if session[:modal] %>
+				<script src="/assets/modal.js"></script>
+				<a data-target="functionInfo" class="modal-open"></a>
+				<% 
+					if session[:user_id] != nil
+						user = User.find_by(id: session[:user_id])
+						user.modal = 1
+						user.save
+						session[:modal] = false
+					end
+				%>
+			<% end %>
+		<% end %>
+<script type="text/javascript" src="/assets/slick.min.js"></script>
+<script>
+//pc&sp共通
+//スライダー----------------------------------------------------------------------------------
+var InitSlick = false
+var init = false
+$('.topSlide').slick({
+  dots: true,
+  infinite: true,
+  speed: 500,
+  fade: true,
+  cssEase: 'linear'
+});
+
+$('.dateSlideList').slick({
+  slidesToShow: 1,
+  initialSlide: 0,
+  infinite: false,
+  arrows: true,
+});
+
+$('.dateSlideList').on('afterChange', function(event, slick, currentSlide, nextSlide){
+	current = document.getElementsByClassName("children slick-slide slick-current slick-active");
+	days = current[0].id
+	if(InitSlick){
+		Getgon(days);
+	}
+	InitSlick = true;
+});
+
+$('.stepSlide').slick({
+  slidesToShow: 1,
+  initialSlide: 0,
+  infinite: false,
+  arrows: true,
+  nextArrow:'<div class="slick-next">次へ</div>',
+});
+
+$('.modal-open').on('click', function () {
+	setTimeout(function() {
+	   $('.stepSlide').slick('getSlick').refresh();
+	},100);
+});
+
+
+function slicktimeLineBox(){
+	//一度スライダーを削除する
+	$('.timelineBox').unslick
+	//スライダーを再定義
+	$('.timelineBox').slick({
+	  infinite: true,
+	  slidesToShow: 8,
+	  slidesToScroll: 1,
+	  responsive: [
+	  {
+	      breakpoint: 1500,
+	      settings: {
+	        slidesToShow: 5,
+					centerMode: true
+	      }
+	  },
+	  {
+	      breakpoint: 1200,
+	      settings: {
+	        centerMode: true,
+	        slidesToShow: 4
+	      }
+	  },
+		{
+			breakpoint: 768,
+			settings: {
+				centerMode: true,
+				slidesToShow: 2
+			}
+		},
+		{
+			breakpoint: 480,
+			settings: {
+				centerMode: true,
+				slidesToShow: 1
+			}
+		}
+	  ]
+	});
+}
+
+</script>
+<!-- flatpicker部分---------------------------------------------------------------------------------- -->
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr@latest/dist/l10n/ja.min.js"></script>
+<script>
+//flatpickrの初期設定
+$(function(){
+	//今日の日付を入れている
+	var now = new Date();
+	var wd = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+	var dates = [];
+	now.setDate(now.getDate() - 4)
+	$('.dateSlideList .children').text(function(){
+		now.setDate(now.getDate() + 1)
+		var y=now.getFullYear();
+	  var m=now.getMonth()+1;
+	  var d=now.getDate();
+	  var w=wd[now.getDay()];
+	  var Days_s = m+"月"+d+"日"+"("+w+")";
+		dates.push(y + "-" + m + "-" + d);
+		return Days_s
+	});
+
+	var count = 0;
+	$('.dateSlideList .children').attr('id',function(){
+		c = dates[count];
+		count++;
+		return c;
+	});
+
+	$('.dateSlideList').slick('slickGoTo', 3);
+});
+
+//flatpickrのカレンダークリック時の動作
+const config = {
+	defaultDate: 'today',
+	dateFormat: '20y-m-d',
+	onChange: function(selectedDates, dateStr, instance) {
+	  let selectedDate = selectedDates[0];
+		var wd = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+		var dates = [];
+		selectedDate.setDate(selectedDate.getDate() - 4)
+		$('.dateSlideList .children').text(function(){
+			selectedDate.setDate(selectedDate.getDate() + 1)
+			var y=selectedDate.getFullYear();
+	    var m=selectedDate.getMonth()+1;
+	    var d=selectedDate.getDate()
+	    var w=wd[selectedDate.getDay()];
+	    var Days_s = m+"月"+d+"日"+"("+w+")";
+			dates.push(y + "-" + m + "-" + d);
+			return Days_s
+	  });
+		var count = 0;
+		$('.dateSlideList .children').attr('id',function(){
+			c = dates[count];
+			count++;
+			return c;
+		});
+    $('.dateSlideList').slick('slickGoTo', 3);
+	}
+
+};
+
+flatpickr('.dateSlide', config);
+
+
+
+//flatpickrのnowを押したときの動作
+$(function(){
+	$('.todayBtn').click(function(){
+		//ここに今日の日付でonchangeさせる内容を入れる
+		//flatpickrのカレンダークリック時の動作
+		$(function(){
+			//今日の日付を入れている
+			var now = new Date();
+			var wd = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+			var dates = [];
+			//今日の日付を取得して、番組をGetする。
+			var days = now.getFullYear() + "-" + (now.getMonth()+1) + "-"+ now.getDate()
+			Getgon(days)
+			//sliderの内容を切り替える
+			now.setDate(now.getDate() - 4)
+			$('.dateSlideList .children').text(function(){
+				now.setDate(now.getDate() + 1)
+				var y=now.getFullYear();
+			  var m=now.getMonth()+1;
+			  var d=now.getDate();
+			  var w=wd[now.getDay()];
+			  var Days_s = m+"月"+d+"日"+"("+w+")";
+				dates.push(y + "-" + m + "-" + d);
+				return Days_s
+			});
+
+			var count = 0;
+			$('.dateSlideList .children').attr('id',function(){
+				c = dates[count];
+				count++;
+				return c;
+			});
+			$('.dateSlideList').slick('slickGoTo', 3);
+			//pcのみスクロールする
+		  	<% if request.from_pc? %>
+		  	  scrollnow();
+		  	<% end %>
+		});
+	});
+});
+
+$(function(){
+	$('.switch').click(function(){
+		  $('.timeLineSumb').toggleClass('hide');
+	  $('.switch img').toggleClass('hide');
+	});
+});
+
+$(".userBox li").hover(function() {
+  $(this).children('ul').not(":animated").fadeIn();
+}, function() {
+  $(this).children('ul').not(":animated").fadeOut();
+});
+
+</script>

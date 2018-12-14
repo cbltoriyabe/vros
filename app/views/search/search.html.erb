@@ -1,0 +1,76 @@
+<div class="cont">
+<div class="searchDetail">
+<% set_meta_tags title: "検索結果", description: "VROS #{@word}の検索結果 | ユーザー参加型のVtuber番組表サービス", og: { title: "検索結果", description: "VROS #{@word}の検索結果 | ユーザー参加型のVtuber番組表サービス",type: 'article' } %>
+
+<h2>"<%= @word %>" の検索結果一覧</h2>
+<div class="searchBox">
+  <%= form_tag('/search/search', method: "get") do %>
+  <input type="search" name="word" placeholder="検索ワード" autocomplete="on" required class="searchInput" value="<%= @word %>">
+  <input type="image" src="/img/searchBtn.png" value="検索" class="searchBtn">
+  <% end %>
+</div>
+
+
+
+<div class="searchDetailIn">
+  <div class="sort_select">
+    <select id="sort" onChange="location.href=value;">
+      <option id="1" value="/search/search?utf8=✓&word=<%= @word %>&sort=1">放映日順（降順）</option>
+      <option id="2" value="/search/search?utf8=✓&word=<%= @word %>&sort=2">放映日順（昇順）</option>
+      <option id="3" value="/search/search?utf8=✓&word=<%= @word %>&sort=3">登録順（降順）</option>
+      <option id="4" value="/search/search?utf8=✓&word=<%= @word %>&sort=4">登録順（昇順）</option>
+    </select>
+  </div>
+
+  <script>
+    //目安時間を初期設定する
+    var options = document.getElementById('sort').options;
+    for(var i = 0; i < options.length; i++){
+      if(options[i].id === '<%= params[:sort] %>'){
+        console.log(options[i].id)
+        options[i].selected = true;
+        break;
+      };
+    };
+  </script>
+<!-- <p>10 /<%= @program_p.length %>件の検索結果を表示しています。</p> -->
+<p><%= page_entries_info(@program_p) %></p>
+<% if @program_p.length != 0 %>
+  <% @program_p.each do |program| %>
+  <div class="searchResultBox">
+    <div class="resultThumb">
+      <a href="/program/detail/<%= program.id %>">
+        <img src="
+        <% if program.image.url != nil %>
+          <%= program.image.url %>
+        <% else %>
+          <%= "/img/sampledummy.png"%>
+        <% end %>" alt="">
+      </a>
+    </div>
+    <div class="resultDetail">
+      <div class="tagTime">
+      <p class="categoryTag"><%= Genre.select(:g_name).find_by(id: program.genre).g_name %></p>
+      <p class="startTime"><%= Time.at(program.start_time_u).strftime("%Y/%m/%d(%a) %H:%M") %></p>
+      </div>
+      <!-- end tagTime -->
+      <div class="userName">
+            <img src="<%= Channel.select(:c_icon).find_by(id: program.channel).c_icon %>" alt="" width="50" height="50">
+            <p><%= Channel.select(:c_name).find_by(id: program.channel).c_name %></p>
+      </div>
+      <!-- end userName -->
+      <p class="resultDetailTxt"><a href="/program/detail/<%= program.id %>"><%= program.p_title %></a></p>
+    </div>
+  </div>
+  <% end %>
+  <div class="pagenation">
+    <%= paginate @program_p %>
+  </div>
+<% end %>
+<!-- endsearchResultBox -->
+
+
+</div>
+</div>
+
+</div>

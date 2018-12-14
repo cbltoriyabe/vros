@@ -1,0 +1,378 @@
+<div class="cont">
+<% set_meta_tags title: "番組編集", description: "VROSの番組編集ページ", og: { title: "番組編集", type: 'article' } %>
+  <div class="contCreateList">
+    <h2 class="main">番組編集</h2>
+    <div class="contCreateListIn">
+    <p class="txt"><span>●</span>は必須項目です</p>
+    <% uri = '/program/' + params[:id] + '/update' %>
+    <%= form_tag(uri , multipart: true, :id => "program") do %>
+      <ul>
+        <li>
+          <h3 class="req">配信プラットフォーム</h3>
+          <select name="pf" id="pf" onchange="platform()">
+            <option value="0">選択してください</option>
+            <option value="YouTubeLive">YouTubeLive</option>
+            <option value="REALITY">REALITY</option>
+            <option value="ニコニコ生放送">ニコニコ生放送</option>
+            <option value="SHOWROOM">SHOWROOM</option>
+            <option value="Mirrativ">Mirrativ</option>
+            <option value="17Live">17Live</option>
+            <option value="Twitch">Twitch</option>
+            <option value="OPENREC.tv">OPENREC.tv</option>
+            <option value="IRIAM">IRIAM</option>
+            <option value="Colon:">Colon:</option>
+            <option value="AbemaTV">AbemaTV</option>
+            <option value="テレビ">テレビ</option>
+            <option value="ラジオ">ラジオ</option>
+            <option value="その他">その他</option>
+          </select>
+
+        </li>
+
+        <% if @program != nil %>
+          <script>
+            //プラットフォームの初期化
+            var options = document.getElementById('pf').options;
+            for(var i = 0; i < options.length; i++){
+              if(options[i].value === '<%= @program.platform %>'){
+                options[i].selected = true;
+                break;
+              };
+            };
+          </script>
+        <% end %>
+        <li>
+          <h3 class="req">配信URL</h3>
+          <form action="programinfo">
+            <input type="text" id="liveURL" name="prourl" value="<%= @program.p_url %>" placeholder="配信元のURLまたはユーザーページのURLを入力してください">
+          </form>
+        </li>
+        <script type="text/javascript">
+        function platform(){
+          var live = document.getElementById("liveURL")
+          var index = document.getElementById("pf").selectedIndex;
+          var platform = document.getElementById("pf").options[index].value;
+          if("<%= @program.p_url %>" == ""){
+            switch(platform){
+              case "YouTubeLive":
+                live.value = 'https://www.youtube.com/';
+                live.disabled = ""
+                break;
+              case "REALITY":
+                live.value = 'https://le.wrightflyer.net/reality/';
+                live.disabled = ""
+                break;
+              case "ニコニコ生放送":
+                live.value = 'https://com.nicovideo.jp/community/';
+                live.disabled = ""
+                break;
+              case "SHOWROOM":
+                live.value = 'https://www.showroom-live.com/';
+                live.disabled = ""
+                break;
+              case "Mirrativ":
+                live.value = 'https://www.mirrativ.com/user/';
+                live.disabled = ""
+                break;
+              case "17Live":
+                live.value = 'https://17media.jp/';
+                live.disabled = ""
+                break;
+              case "Twitch":
+                live.value = 'https://www.twitch.tv/';
+                live.disabled = ""
+                break;
+              case "OPENREC.tv":
+                live.value = 'https://www.openrec.tv/live';
+                live.disabled = ""
+                break;
+            }
+          }
+        }
+        </script>
+
+        <li>
+          <h3 class="req">タイトル</h3>
+          <input type="text" name="title" value="<%= @program.p_title %>">
+        </li>
+
+        <li>
+          <h3 class="req">配信者</h3>
+          <input type="text" name="liver" value="<%= @program.member.split(",")[0] %>" placeholder="配信者の名前を入力してください">
+        </li>
+
+        <li>
+          <h3 class="req">配信日時</h3>
+          <% if @program.day != nil %>
+            <input class="datePick" type="date" name="date" value="<%= @program.day %>">
+          <% else %>
+            <!-- 今日の日付を表示 -->
+            <input class="datePick" type="date" name="date" placeholder="配信日時を入力してください">
+          <% end %>
+        </li>
+
+        <li>
+          <h3 class="req">開始時間</h3>
+          <% if @program.start_time != nil %>
+            <input class="timePick" type="time" name="starttime" value="<%= Time.at(@program.start_time_u).strftime("%H:%M") %>">
+          <% else %>
+            <input class="timePick" type="time" name="starttime" placeholder="開始時間を入力してください">
+          <% end %>
+        </li>
+
+        <li>
+          <h3>時間（目安）</h3>
+          <select id="meyasu" name="times" size="0">
+            <option value="0">未定</option>
+            <option value="1">30分未満</option>
+            <option value="30">30分</option>
+            <option value="60">1時間</option>
+            <option value="90">1時間半</option>
+            <option value="120">2時間</option>
+            <option value="150">2時間半</option>
+            <option value="180">3時間</option>
+            <option value="210">3時間半</option>
+            <option value="240">4時間</option>
+            <option value="270">4時間半</option>
+            <option value="300">5時間</option>
+            <option value="330">5時間半</option>
+            <option value="360">6時間</option>
+            <option value="390">6時間半</option>
+            <option value="420">7時間</option>
+            <option value="450">7時間半</option>
+            <option value="480">8時間</option>
+            <option value="510">8時間半</option>
+            <option value="540">9時間</option>
+            <option value="570">9時間半</option>
+            <option value="600">10時間</option>
+            <option value="630">10時間半</option>
+            <option value="660">11時間</option>
+            <option value="690">11時間半</option>
+            <option value="720">12時間</option>
+          </select>
+        </li>
+
+        <script>
+          //目安時間を初期設定する
+          var options = document.getElementById('meyasu').options;
+          for(var i = 0; i < options.length; i++){
+          	if(options[i].value === '<%= @program.meyasu %>'){
+          		options[i].selected = true;
+          		break;
+          	};
+          };
+        </script>
+
+        <li>
+          <h3 class="req">概要</h3>
+          <textarea rows="4" cols="40" name="about"><%= @program.about %></textarea>
+        </li>
+
+        <li class="cast">
+          <h3>出演者</h3>
+          <div class="castList" id="castList">
+            <ul>
+              <% if @program.member != nil %>
+                <% member = @program.member.split(",") %>
+                <% if member.length != 0
+                     member.each_with_index do |a,i|
+                     memval = i + 1
+                     memnam = i + 1 %>
+                      <li><input type="text" name="member[<%= memnam %>]" value="<%= member[memval] %>"></li>
+                  <% end %>
+                <% else %>
+                    <li><input type="text" name="member[1]"></li>
+                <% end %>
+              <% else %>
+                <li><input type="text" name="member[1]"></li>
+              <% end %>
+            </ul>
+            <p class="plusBtn">
+              <img src="/img/plusBtn.png" alt="">
+            </p>
+          </div>
+        </li>
+
+        <li>
+          <h3 class="req">ジャンル</h3>
+          <select name="g_name">
+            <% @genre.each do |genre| %>
+              <% if genre.id == @program.genre %>
+                <option value="<%= genre.id %>" label="<%= genre.g_name %>" selected><%= genre.g_name %></option>
+              <% else %>
+                <option value="<%= genre.id %>" label="<%= genre.g_name %>"><%= genre.g_name %></option>
+              <% end %>
+            <% end %>
+          </select>
+        </li>
+
+        <li>
+          <h3>タグ</h3>
+          <div class="tagBox">
+            <p>「,(カンマ)」でタグを複数入力することができます。</p>
+            <input type="text" name="tags" value="<%= @program.tag %>">
+          </div>
+        </li>
+
+        <li>
+          <h3>サムネイル</h3>
+          <div class="fileBox">
+            <input name="image" type="file" id="file" style="display:none;" onchange="$('#fake_input_file').val($(this).prop('files')[0].name)">
+            <p onClick="$('#file').click();" class="btn fileBtn">+ファイル選択</p>
+              <input id="fake_input_file" readonly type="text" value=""  onClick="$('#file').click();">
+          </div>
+        </li>
+
+        <li>
+          <div class="thumbnailBox">
+            <p><b>登録中のサムネイル</b></p>
+            <% if @program.image.url != nil %>
+              <img src="<%= @program.image.url %>" width="480" height="270">
+            <% else %>
+              <p>サムネイルは登録されていません</p>
+            <% end %>
+          </div>
+        </li>
+
+        <li>
+          <h3>情報源URL</h3>
+          <input type="text" name="info" placeholder="Twitterの告知URLなど" value="<%= @program.info %>">
+        </li>
+
+        <li>
+          <h3 class="req">公開状況</h3>
+          <div class="statuBox">
+            <p>非公開にすると番組表に表示がされなくなり、検索から除外されます</p>
+            <ul class="radioBox">
+              <% if @program.delstatus %>
+                <li><input type="radio" name="delstatus" value="0" id="public" class="checkBoxIn">
+                  <label for="public">公開</label>
+                <li><input type="radio" name="delstatus" value="1" id="close" class="checkBoxIn" checked>
+                  <label for="close">非公開</label>
+              <% elsif @program.delstatus == false %>
+                <li><input type="radio" name="delstatus" value="0" id="public" class="checkBoxIn" checked>
+                  <label for="public">公開</label>
+                <li><input type="radio" name="delstatus" value="1" id="close" class="checkBoxIn">
+                  <label for="close">非公開</label>
+              <% else %>
+                <li><input type="radio" name="delstatus" value="0" id="public" class="checkBoxIn">
+                  <label for="public">公開</label>
+                <li><input type="radio" name="delstatus" value="1" id="close" class="checkBoxIn">
+                  <label for="close">非公開</label>
+              <% end %>
+            </ul>
+          </div>
+        </li>
+
+        <li>
+          <h3 class="req">アーカイブ</h3>
+          <div class="archiveBox">
+            <p>「あり」にしておくと、配信終了後も検索結果として表示されます。</p>
+            <ul class="radioBox">
+              <% if @program.archives == "true" %>
+                <li><input type="radio" name="archives" value="true" id="yes" class="checkBoxIn" checked="checked">
+                  <label for="yes">あり</label>
+                <li><input type="radio" name="archives" value="false" id="no" class="checkBoxIn">
+                  <label for="no">なし</label>
+              <% else %>
+                <li><input type="radio" name="archives" value="true" id="yes" class="checkBoxIn">
+                  <label for="yes">あり</label>
+                <li><input type="radio" name="archives" value="false" id="no" class="checkBoxIn" checked="checked">
+                  <label for="no">なし</label>
+              <% end %>
+            </ul>
+          </div>
+        </li>
+
+        <div class="infoBox">
+          <div class="infoBoxIn">
+            <h2>配信元情報</h2>
+            <p class="txt">番組を配信するVtuberのチャンネルIDを入力してください。<br>
+            チャンネルIDとはURLの末尾についているUCから始まるものです。<br>
+            https://www.youtube.com/channel/<b>UC-rEbtxBcgRCD53DzoLVGPA</b><br>
+            入力後「チャンネル情報取得」を押下して、確認してください。
+            </p>
+            <div class="youtubeUrl">
+              <h3 class="req">YouTubeチャンネルID</h3>
+                <input type="text" id="c_url" name="chaurl" value="<%= Channel.find_by(id: @program.channel).c_url %>">
+                <p id="myid"> </p>
+                <input type="button" id="button" class="getBtn" value="チャンネル情報取得">
+
+                <script src="https://code.jquery.com/jquery-3.0.0.min.js"></script>
+                <script>
+                  $('#button').on('click',
+                    function button(c_id) {
+                      $.ajax({
+                        type: "get",
+                        url: "https://www.googleapis.com/youtube/v3/channels?part=snippet&id=" + document.forms.program.c_url.value + "&key=" + "<%= Rails.application.secrets.YoutubeApi%>",
+                        dataType: "json",
+                        success: function(json){
+                          if (json.items[0] != null){
+                            document.getElementById("error_title").innerHTML　= ""
+                            document.getElementById("youtubeOwner").style.visibility = "visible";
+                            c_title = document.getElementById("c_title");
+                            c_img = document.getElementById("c_img");
+                            c_title.innerHTML = json.items[0].snippet.title;
+                            c_img.src = json.items[0].snippet.thumbnails.default.url;
+                          }else{
+                            document.getElementById("youtubeOwner").style.visibility = "hidden";
+                            document.getElementById("error_title").innerHTML = "該当するチャンネルがありません";
+                          }
+                        },
+                        error: function(json){
+                          console.log('error');
+                        }
+                      })
+                    }
+                  );
+                  var myfunc = function(){
+            	    }
+                </script>
+
+            </div>
+            <p id="error_title"></p>
+            <div class="youtubeOwner" id="youtubeOwner">
+              <img id="c_img" src="" name="c_icon" alt="該当するチャンネルがありません">
+              <p id="c_title" name="c_name"></p>
+            </div>
+          </div>
+        </div>
+              <p><input type="submit" value="この内容で編集する" class="btn mainBtn"></p>
+              <% end %>
+
+        </li>
+      </table>
+      <a href="#" onclick="javascript:window.history.back(-1);return false;">
+        <p class="btn secondBtn">戻る</p>
+      </a>
+
+<!--- Script --->
+    <script>
+    var count = document.getElementsByClassName("castList")[0].children[0].children.length;
+          $(function() {
+            $('.plusBtn').click(function() {
+              count++;
+              $('.castList ul').append('<li><input type="text" name="member[' + count + ']"></li>');
+            });
+          });
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script>
+      flatpickr('.datePick', {
+        dateFormat: 'Y-m-d',
+        minDate: 'today'
+      });
+
+      flatpickr('.timePick',{
+        enableTime: true, // タイムピッカーを有効
+        noCalendar: true, // カレンダーを非表示
+        enableSeconds: false, // '秒' を無効
+        time_24hr: true, // 24時間表示
+        dateFormat: "H:i", // 時間のフォーマット "時:分"
+      }
+      )
+
+    </script>
+
+</div>

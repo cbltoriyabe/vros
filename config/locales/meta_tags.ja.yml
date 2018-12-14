@@ -1,0 +1,9 @@
+ja:
+  meta_tags:
+    defaults:
+      site: 'VROS'
+      description: 'VROSはVtuberのライブ配信を全力で応援するサイトです'
+      keywords: 'Vtuber,VROS,バーチャルYouTuber'
+      title: 'トップページ'
+      twitter:card: 'summary_large_image'
+      twitter:site: '@vros_info'

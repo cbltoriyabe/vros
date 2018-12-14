@@ -1,0 +1,222 @@
+<div class="cont">
+
+	<div class="topSlide">
+		<img src="/img/vrHead.png" alt="">
+		<img src="/img/vrHead2.png" alt="">
+	</div>
+
+	<div class="dateContent">
+
+		<div class="dateSlide" data-wrap="true" data-clickOpens="false">
+			<a class="input-button" title="toggle" data-toggle>
+			<p><img src="/img/calendar.png" alt=""></p>
+			</a>
+			<form action="program_upd" method="post">
+				<a href="">
+				<input class="datePick" id="date" type="text" data-altinput=true data-input>
+				</a>
+			</form>
+			<ul class="dateSlideList">
+				<li class="children">00</li>
+				<li class="children">00</li>
+				<li class="children">00</li>
+				<li class="children">00</li>
+				<li class="children">00</li>
+				<li class="children">00</li>
+				<li class="children">00</li>
+			</ul>
+		</div>
+
+		<div class="thumbSwitch">
+			<p class="copy">サムネイル表示</p>
+			<p class="switch"><img src="/img/switchOn.png" alt="ON"></p>
+		</div>
+
+	</div>
+<!-- end dateContent -->
+
+<p>日付入力</p>
+<input type="date" id="name">
+<button type="button" id="form-button">入力</button>
+<div id="form-text"></div>
+
+<script>
+document.getElementById("form-button").onclick = function(){
+		$.ajax({
+				url: "/program/topupdate",
+				type: "GET",
+				data: {
+					days: document.getElementById("name").value
+				},
+				dataType: "html",
+				success: function(data) {
+
+				},
+				error: function(data) {
+					alert("errror");
+				}
+		});
+};
+</script>
+
+	<div class="timelineBox">
+		<% @genre.each do |genre| %>
+			<div class="timeLineTable">
+			<h2><%= genre.g_name %></h2>
+			<ul>
+				<% logger.debug(@program) %>
+				<% @program.each do |program| %>
+					<% if program.genre == genre.id %>
+						<li>
+							<div class="timeLineSumb">
+								<!-- ここにイメージ画像  -->
+							</div>
+
+							<div class="timeLineDate">
+								<p class="startTime"><time><%= program.start_time.strftime("%H:%M") %></time>～</p>
+								<p class="yokiCount">
+									<%= link_to(program.like, "program/like") %>
+								</p>
+							</div>
+
+							<div class="userName">
+								<img src="<%= Channel.select(:c_icon).find_by(id: program.channel).c_icon %>" alt="" width="50" height="50">
+								<p><%= Channel.select(:c_name).find_by(id: program.channel).c_name %></p>
+							</div>
+
+							<div class="timeLineDatail">
+								<form action="">
+									<input type="hidden" name="p_id" value="<%= program.id %>">
+									<p><a href="/program/detail/<%= program.id %>"><%= program.p_title%></a></p>
+								</form>
+							</div>
+
+							<div class="timeLineTag">
+								<p><%= program.tag %></p>
+							</div>
+						</li>
+					<% end %>
+				<% end %>
+			</ul>
+			</div>
+		<% end %>
+	</div>
+</div>
+
+<!--- script --->
+<script type="text/javascript" src="https://code.jquery.com/jquery-1.11.0.min.js"></script>
+<script type="text/javascript" src="https://code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+<!-- gototop -->
+<script>
+	$(function(){
+    $('.gotoTop').click(function () {
+        $("html,body").animate({scrollTop:0},"300");
+    });
+});
+</script>
+<script type="text/javascript" src="/assets/slick.min.js"></script>
+<script>
+$('.topSlide').slick({
+  dots: true,
+  infinite: true,
+  speed: 500,
+  fade: true,
+  cssEase: 'linear'
+});
+
+$('.dateSlideList').slick({
+  slidesToShow: 1,
+  initialSlide: 0,
+  infinite: false,
+  arrows: true,
+});
+
+
+$('.timelineBox').slick({
+  infinite: true,
+  slidesToShow: 4,
+  slidesToScroll: 1,
+  responsive: [
+      {
+      breakpoint: 768,
+      settings: {
+        slidesToShow: 2
+      }
+  },
+    {
+      breakpoint: 480,
+      settings: {
+        centerMode: true,
+        slidesToShow: 1
+      }
+    }
+  ]
+});
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr@latest/dist/l10n/ja.min.js"></script>
+<script>
+const config = {
+defaultDate: 'today',
+dateFormat: 'm月d日(D)',
+onChange: function(selectedDates, dateStr, instance) {
+    let selectedDate = selectedDates[0];
+	var wd = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+
+    $('.dateSlideList .children').text(function(){
+    var m=selectedDate.getMonth()+1;
+    var d=selectedDate.getDate();
+    var w=wd[selectedDate.getDay()];
+    selectedDate.setDate(selectedDate.getDate()+1);
+    return m+"月"+d+"日"+"("+w+")";
+  });
+    $('.dateSlideList').slick('slickGoTo', 0);
+}
+
+};
+flatpickr('.dateSlide', config);
+</script>
+
+ <script>
+	$(function(){
+  var now = new Date();
+  var wd = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+
+  $('.dateSlideList .children').text(function(){
+    var m=now.getMonth()+1;
+    var d=now.getDate();
+    var w=wd[now.getDay()];
+    now.setDate(now.getDate()+1);
+    return m+"月"+d+"日"+"("+w+")";
+  });
+});
+</script>
+
+
+<!-- jquery & iScroll -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/iScroll/5.2.0/iscroll.min.js"></script>
+<!-- drawer.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/drawer/3.2.2/js/drawer.min.js"></script>
+<script>
+$(document).ready(function() {
+  $('.drawer').drawer();
+});
+</script>
+
+<script>
+$(function(){
+   $('.switch').click(function(){
+   	  $('.timeLineSumb').toggleClass('hide');
+      $('.switch img').toggleClass('hide');
+   });
+});
+</script>
+
+<script>
+	$(".userBox li").hover(function() {
+    $(this).children('ul').not(":animated").fadeIn();
+}, function() {
+    $(this).children('ul').not(":animated").fadeOut();
+});
+</script>

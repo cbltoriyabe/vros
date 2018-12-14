@@ -1,0 +1,27 @@
+<div class="cont">
+<div class="contCreateList">
+<div class="contContactIn about">
+  <h3>登録ユーザー推移</h3>
+  <br>登録ユーザー累計：<%= @all_result %>
+  <table border="1" width="500" cellspacing="0" cellpadding="5" bordercolor="#333333">
+    <tr>
+      <th>日付</th>
+      <th>件数</th>
+    </tr>
+    <script>
+      var dataset = [];
+    </script>
+    <% @result.each_with_index do |result, i| %>
+    <script>
+      var data = [<%= result[0] %>,<%= result[1] %>]
+      dataset.push(data);
+    </script>
+    <tr>
+      <td><%= result[0] %></td>
+      <td><%= result[1] %></td>
+    </tr>
+    <% end %>
+  </table>
+</div>
+</div>
+</div>

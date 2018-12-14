@@ -1,0 +1,34 @@
+<div class="cont">
+<div class="contCreateList">
+<h1>ジャンル管理画面</h1>
+<%= link_to("ジャンル管理", "/manager/genre") %>
+<%= link_to("チャンネル管理", "/manager/channel") %>
+<%= link_to("番組管理", "/manager/program") %>
+<%= link_to("ユーザー管理", "/manager/user") %>
+<form action="/manager/genre_reg">
+  <p><input type="text" name="genre_name"><input type="submit" value="登録"></p>
+</form>
+<table border="1" width="500" cellspacing="0" cellpadding="5" bordercolor="#333333">
+  <tr>
+    <th>ID</th>
+    <th>ジャンル名</th>
+    <th>SORT</th>
+    <th>BAN</th>
+  </tr>
+  <% @genre.each do |genre| %>
+    <tr>
+    <form action="/manager/genre_del" method="post">
+    <td><%= genre.id %></td>
+    <td><%= genre.g_name %></td>
+    <td><%= genre.sort %></td>
+    <td>
+      <input type="hidden" name="g_id" value="<%= genre.id %>">
+      <input type="submit" value="削除">
+    </td>
+    </form>
+    </p>
+  <% end %>
+</table>
+左からソート順に並ぶ。
+</div>
+</div>

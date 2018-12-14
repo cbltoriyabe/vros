@@ -1,0 +1,62 @@
+<div class="cont">
+<% set_meta_tags title: "お問い合わせ", description: "VROSのお問い合わせ", og: { title: "お問い合わせ", type: 'article' } %>
+
+
+<div class="contCreateList">
+<h2 class="main">お問い合わせ</h2>
+
+<p class="txt center">このサイトに関するご意見やご質問など、お知らせください。</p>
+
+<div class="contContactIn">
+
+<%= form_tag('/contact/create') do %>
+  <input name="utf8" type="hidden" value="✓">
+  <input type="hidden" name="" value="">
+
+<ul>
+  <li>
+    <h3>お問い合わせ内容</h3>
+    <% if params[:statu] == "true" %>
+      <select name="genre">
+        <option value="VROSへのご質問">VROSへのご質問</option>
+        <option value="感想やご要望、応援メッセージなど">感想やご要望、応援メッセージなど</option>
+        <option value="VROSとの協業/広告出稿について">VROSとの協業/広告出稿について</option>
+        <option value="問題のある番組情報のご報告" selected>問題のある番組情報のご報告</option>
+        <option value="その他">その他</option>
+      </select>
+    <% else %>
+      <select name="genre">
+        <option value="VROSへのご質問">VROSへのご質問</option>
+        <option value="感想やご要望、応援メッセージなど">感想やご要望、応援メッセージなど</option>
+        <option value="VROSとの協業/広告出稿について">VROSとの協業/広告出稿について</option>
+        <option value="問題のある番組情報のご報告">問題のある番組情報のご報告</option>
+        <option value="その他">その他</option>
+      </select>
+    <% end %>
+  </li>
+  <li>
+    <h3>お名前</h3>
+    <input type="text" name="name" placeholder="お名前を入力してください" value="<%= @contact.name %>">
+  </li>
+  <li>
+    <h3>メールアドレス</h3>
+    <input type="email" name="mail" placeholder="メールアドレスを入力してください" value="<%= @contact.mail %>">
+  </li>
+  <li>
+    <h3>コメント</h3>
+    <textarea rows="4" cols="40" name="com"  placeholder="お問い合わせ内容を入力してください"><% if params[:p_title] %>問題のある番組名：<%= params[:p_title] %><% end %><%= @contact.com %></textarea>
+  </li>
+  <li>
+    <%= recaptcha_tags %>
+  </li>
+
+</ul>
+    <input type="submit" value="送信する" class="btn mainBtn">
+    <% end %>
+  </div>
+
+
+</div>
+
+
+</div>

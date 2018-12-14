@@ -1,0 +1,30 @@
+<div class="cont narrow">
+<% set_meta_tags title: "ログイン", description: "VROSのログインページ", og: { title: "ログイン", type: 'article' } %>
+
+<div class="contLoginList">
+<h2 class="main">ログイン</h2>
+
+<form>
+  <ul class="loginBox">
+    <a href="https://accounts.google.com/o/oauth2/auth?response_type=code&amp;client_id=1009224866025-100m8o3t4691pjgs0vqnc4quo2b9uko0.apps.googleusercontent.com&amp;redirect_uri=http://vros.jp/login/google&amp;scope=https://www.googleapis.com/auth/plus.login%20https://www.googleapis.com/auth/youtube.force-ssl&amp;access_type=offline">
+      <li class="googleLogin">
+      Googleでログイン
+      </li>
+    </a>
+  </ul>
+  <p class="txt center"><%= link_to("今はログインしない", "/top") %>
+</form>
+
+<p class="center">※ログインいただくことで<a href="/policy/policy">プライバシーポリシー</a>と<a href="/policy/termsofuse">利用規約</a>に同意するものとみなします。</p>
+
+<h3 class="center">ログインでできること</h3>
+<p class="center">VTuberの生放送情報を番組表に登録できるようになります。<br>
+情報提供者としてユーザー情報が表示されます。<br>
+TOPページの画像が非表示になります。<br>
+登録した番組と良き！した番組一覧をマイページで確認できます。
+</p>
+
+<h3 class="center">取得情報の取扱について</h3>
+<p class="center">番組登録時にVROSに表示するためのGoogleアカウントIDとお名前、アイコンを取得しています。</p>
+
+</div>

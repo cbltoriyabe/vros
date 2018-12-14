@@ -1,0 +1,56 @@
+<div class="cont">
+<div class="searchDetail">
+  <% set_meta_tags title: "マイページ", description: "VROS 良き番組一覧 | ユーザー参加型のVtuber番組表サービス", og: { title: "登録番組一覧", description: "登録番組一覧 | ユーザー参加型のVtuber番組表サービス",type: 'article' } %>
+
+  <h2>マイページ</h2>
+  <div class="mypageTab">
+    <ul>
+      <li><a href="/login/userview?utf8=✓&sort=3">登録した番組一覧</a></li>
+      <li class="here"><a href="">良き！した番組一覧</a></li>
+    </ul>
+  </div>
+<div class="searchDetailIn">
+  <p><%= page_entries_info(@program_p) %></p>
+  <% if @program_p.length != 0 %>
+    <% @program_p.each do |program| %>
+    <% if program.delstatus %>
+      <div class="searchResultBox private">
+    <% else %>
+      <div class="searchResultBox">
+    <% end %>
+      <div class="resultThumb">
+        <a href="/program/detail/<%= program.id %>">
+          <img src="
+          <% if program.image.url != nil %>
+            <%= program.image.url %>
+          <% else %>
+            <%= "/img/sampledummy.png"%>
+          <% end %>" alt="">
+        </a>
+      </div>
+      <div class="resultDetail">
+        <div class="tagTime">
+        <p class="categoryTag"><%= Genre.select(:g_name).find_by(id: program.genre).g_name %></p>
+        <p class="startTime"><%= Time.at(program.start_time_u).strftime("%Y/%m/%d(%a) %H:%M") %></p>
+        </div>
+        <!-- end tagTime -->
+        <div class="userName">
+              <img src="<%= Channel.select(:c_icon).find_by(id: program.channel).c_icon %>" alt="" width="50" height="50">
+              <p><%= Channel.select(:c_name).find_by(id: program.channel).c_name %></p>
+        </div>
+        <!-- end userName -->
+        <p class="resultDetailTxt"><a href="/program/detail/<%= program.id %>"><%= program.p_title %></a></p>
+      </div>
+    </div>
+    <% end %>
+    <div class="pagenation">
+      <%= paginate @program_p %>
+    </div>
+  <% end %>
+</div>
+<div class="logoutContent">
+  <a href="/logout"><p class="btn secondBtn">ログアウト</p></a>
+</div>
+  <!-- endsearchResultBox -->
+</div>
+</div>

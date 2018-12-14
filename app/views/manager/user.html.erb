@@ -1,0 +1,31 @@
+<div class="cont">
+  <h1>ユーザー一覧</h1>
+  <%= link_to("ジャンル管理", "/manager/genre") %>
+  <%= link_to("チャンネル管理", "/manager/channel") %>
+  <%= link_to("番組管理", "/manager/program") %>
+  <%= link_to("ユーザー管理", "/manager/user") %>
+  <table border="1" width="1000" cellspacing="0" cellpadding="5" bordercolor="#333333">
+      <tr>
+        <th>ID</th>
+        <th>アイコン</th>
+        <th>名前</th>
+        <th>登録日</th>
+        <th>BAN</th>
+      </tr>
+    <% @user.each do |user| %>
+      <tr>
+        <form action="/manager/user_del" method="post">
+          <td><%= user.id %></td>
+          <td><img src="<%= GoogleT.select(:g_icon).find_by(g_id: user.g_id).g_icon %>" width="50" height="50"></td>
+          <td><%= user.name %></td>
+          <td><%= user.created_at %>
+          <td>
+            <input type="hidden" name="u_id" value="<%= user.id %>">
+            <input type="submit" value="削除">
+          </td>
+        </form>
+
+      </tr>
+    <% end %>
+  </table>
+</div>
